@@ -2,6 +2,7 @@ import pickle
 import argparse
 
 import cv2
+import numpy as np
 from tqdm import tqdm
 
 from lib.config import Config
@@ -9,11 +10,15 @@ from lib.config import Config
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Tool to generate qualitative results videos")
-    parser.add_argument("--pred", help=".pkl file to load predictions from")
+    parser.add_argument("--pred", help=".pkl file to load predictions from", required=True)
     parser.add_argument("--cfg", default="config.yaml", help="Config file")
     parser.add_argument("--cover", default="tusimple_cover.png", help="Cover image file")
     parser.add_argument("--out", default="video.avi", help="Output filename")
     parser.add_argument("--view", action="store_true", help="Show predictions instead of creating video")
+    parser.add_argument("--length", type=int, help="Length of the output video (seconds)")
+    parser.add_argument("--clips", type=int, help="Number of clips")
+    parser.add_argument("--fps", default=5, type=int, help="Video FPS")
+    parser.add_argument("--legend", help="Path to legend image file")
 
     return parser.parse_args()
 
@@ -24,7 +29,7 @@ def add_cover_img(video, cover_path, frames=90):
         video.write(cover)
 
 
-def create_video(filename, width, height, fps=30):
+def create_video(filename, width, height, fps=5):
     fourcc = cv2.VideoWriter_fourcc(*'MP42')
     video = cv2.VideoWriter(filename, fourcc, float(fps), (width, height))
 
@@ -32,26 +37,41 @@ def create_video(filename, width, height, fps=30):
 
 
 def main():
+    np.random.seed(0)
     args = parse_args()
     cfg = Config(args.cfg)
+    print('Loading dataset...')
     dataset = cfg.get_dataset('test')
+    print('Done')
     height, width = cfg['datasets']['test']['parameters']['img_size']
     print('Using resolution {}x{}'.format(width, height))
+    legend = cv2.imread(args.legend) if args.legend else None
     if not args.view:
-        video = create_video(args.out, width, height)
-    # add_cover_img(video, args.cover)
-    with open(args.pred, "rb") as pred_file:
-        predictions = pickle.load(pred_file)
+        video = create_video(args.out, width, height + legend.shape[0] if legend is not None else 0, args.fps)
 
-    for idx, pred in tqdm(zip(range(len(dataset)), predictions), total=len(dataset)):
-        if idx < 2200: continue
-        if idx > 3000: break
-        det_pred, cls_pred = pred
-        assert det_pred.shape[0] == 1  # batch size == 1
-        frame = dataset.draw_annotation(idx,
-                                        pred=det_pred[0].cpu().numpy(),
-                                        cls_pred=cls_pred[0].cpu().numpy() if cls_pred is not None else None)
+    print('Loading predictions...')
+    with open(args.pred, "rb") as pred_file:
+        predictions = np.array(pickle.load(pred_file))
+    print("Done.")
+
+    if args.length is not None and args.clips is not None:
+        video_length = args.length * args.fps
+        assert video_length % args.clips == 0
+        clip_length = video_length // args.clips
+        all_clip_ids = np.arange(len(dataset) // clip_length)
+        selected_clip_ids = np.random.choice(all_clip_ids, size=args.clips, replace=False)
+        frame_idxs = (np.repeat(selected_clip_ids, clip_length).reshape(args.clips, clip_length) + np.arange(
+            clip_length)).flatten()
+        total = len(frame_idxs)
+    else:
+        total = len(dataset)
+        frame_idxs = np.arange(len(dataset))
+
+    for idx, pred in tqdm(zip(frame_idxs, predictions[frame_idxs]), total=total):
+        frame, _, _ = dataset.draw_annotation(idx, pred=pred)
         assert frame.shape[:2] == (height, width)
+        if legend is not None:
+            frame = np.vstack((legend, frame))
         if args.view:
             cv2.imshow('frame', frame)
             cv2.waitKey(0)
