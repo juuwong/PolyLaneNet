@@ -143,7 +143,7 @@ if __name__ == "__main__":
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                               batch_size=batch_size if args.view is False else 1,
                                               shuffle=False,
-                                              num_workers=0)
+                                              num_workers=0) # originally 8, set to 0 to run on my computer
     # Eval results
     evaluator = Evaluator(test_loader.dataset, exp_root)
 
