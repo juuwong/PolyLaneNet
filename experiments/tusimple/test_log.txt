@@ -489,3 +489,3928 @@ Traceback (most recent call last):
   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
     super(_open_file, self).__init__(open(name, mode))
 FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+[2021-02-13 21:14:06,293] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 21:14:06,293] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 21:14:09,136] [INFO] Code state:
+ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
+
+*************
+Git diff:
+*************
+diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+index c3e5846..92158b8 100644
+--- a/experiments/tusimple/test_log.txt
++++ b/experiments/tusimple/test_log.txt
+@@ -489,3 +489,81 @@ Traceback (most recent call last):
+   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+     super(_open_file, self).__init__(open(name, mode))
+ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++[2021-02-13 21:14:06,293] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:14:06,293] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+
+[2021-02-13 21:14:09,137] [INFO] Starting testing.
+[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 159, in <module>
+    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+  File "test.py", line 23, in test
+    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
+  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
+[2021-02-13 21:38:00,624] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 21:38:00,624] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 21:38:03,494] [INFO] Code state:
+ Git hash: c0886bb88797affc615fca4963461bc829bc7886
+
+*************
+Git diff:
+*************
+diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+index c3e5846..29299d3 100644
+--- a/experiments/tusimple/test_log.txt
++++ b/experiments/tusimple/test_log.txt
+@@ -489,3 +489,266 @@ Traceback (most recent call last):
+   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+     super(_open_file, self).__init__(open(name, mode))
+ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++[2021-02-13 21:14:06,293] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:14:06,293] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 21:14:09,136] [INFO] Code state:
++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..92158b8 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,81 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 21:14:09,137] [INFO] Starting testing.
++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 23, in test
++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
++    with _open_file_like(f, 'rb') as opened_file:
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
++    return _open_file(name_or_buffer, mode)
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++    super(_open_file, self).__init__(open(name, mode))
++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
++[2021-02-13 21:38:00,624] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:38:00,624] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+
+[2021-02-13 21:38:03,495] [INFO] Starting testing.
+[2021-02-13 21:38:03,670] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 159, in <module>
+    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+  File "test.py", line 34, in test
+    for idx, (images, labels, img_idxs) in enumerate(test_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
+    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+[2021-02-13 22:08:48,278] [INFO] Experiment name: tusimple
+[2021-02-13 22:08:48,278] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 22:08:48,278] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 22:08:50,446] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 141, in <module>
+    test_dataset = cfg.get_dataset("test")
+  File "/workspace/lib/config.py", line 22, in get_dataset
+    return getattr(datasets,
+  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
+[2021-02-13 23:11:37,369] [INFO] Experiment name: tusimple
+[2021-02-13 23:11:37,412] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 23:11:37,413] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 23:12:15,411] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 141, in <module>
+    test_dataset = cfg.get_dataset("test")
+  File "/workspace/lib/config.py", line 22, in get_dataset
+    return getattr(datasets,
+  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
+[2021-02-13 23:28:09,387] [INFO] Experiment name: tusimple
+[2021-02-13 23:28:09,461] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple/training"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 23:28:09,461] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 23:29:14,830] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 137, in <module>
+    model = cfg.get_model().to(device)
+  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 425, in to
+    return self._apply(convert)
+  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
+    module._apply(fn)
+  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
+    module._apply(fn)
+  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 223, in _apply
+    param_applied = fn(param)
+  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 423, in convert
+    return t.to(device, dtype if t.is_floating_point() else None, non_blocking)
+KeyboardInterrupt
+[2021-02-13 23:30:10,333] [INFO] Experiment name: tusimple
+[2021-02-13 23:30:10,333] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple/training"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 23:30:10,333] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 23:30:15,324] [INFO] Code state:
+ Git hash: c0886bb88797affc615fca4963461bc829bc7886
+
+*************
+Git diff:
+*************
+diff --git a/experiments/tusimple/.config.yaml.swp b/experiments/tusimple/.config.yaml.swp
+index 0da5709..c7b24c5 100644
+Binary files a/experiments/tusimple/.config.yaml.swp and b/experiments/tusimple/.config.yaml.swp differ
+diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+index c3e5846..dbd844c 100644
+--- a/experiments/tusimple/test_log.txt
++++ b/experiments/tusimple/test_log.txt
+@@ -489,3 +489,915 @@ Traceback (most recent call last):
+   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+     super(_open_file, self).__init__(open(name, mode))
+ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++[2021-02-13 21:14:06,293] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:14:06,293] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 21:14:09,136] [INFO] Code state:
++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..92158b8 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,81 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 21:14:09,137] [INFO] Starting testing.
++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 23, in test
++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
++    with _open_file_like(f, 'rb') as opened_file:
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
++    return _open_file(name_or_buffer, mode)
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++    super(_open_file, self).__init__(open(name, mode))
++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
++[2021-02-13 21:38:00,624] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:38:00,624] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 21:38:03,494] [INFO] Code state:
++ Git hash: c0886bb88797affc615fca4963461bc829bc7886
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..29299d3 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,266 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 21:14:09,136] [INFO] Code state:
+++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
+++
+++*************
+++Git diff:
+++*************
+++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+++index c3e5846..92158b8 100644
+++--- a/experiments/tusimple/test_log.txt
++++++ b/experiments/tusimple/test_log.txt
+++@@ -489,3 +489,81 @@ Traceback (most recent call last):
+++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++     super(_open_file, self).__init__(open(name, mode))
+++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++++[2021-02-13 21:14:06,293] [INFO] Config:
++++# Training settings
++++seed: 0
++++exps_dir: 'experiments'
++++iter_log_interval: 1
++++iter_time_window: 100
++++model_save_interval: 1
++++backup:
++++model:
++++  name: PolyRegression
++++  parameters:
++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++++    pretrained: true
++++    backbone: 'efficientnet-b0'
++++    pred_category: false
++++    curriculum_steps: [0, 0, 0, 0]
++++loss_parameters:
++++  conf_weight: 1
++++  lower_weight: 1
++++  upper_weight: 1
++++  cls_weight: 0
++++  poly_weight: 300
++++batch_size: 16
++++epochs: 2695
++++optimizer:
++++  name: Adam
++++  parameters:
++++    lr: 3.0e-4
++++lr_scheduler:
++++  name: CosineAnnealingLR
++++  parameters:
++++    T_max: 385
++++
++++# Testing settings
++++test_parameters:
++++  conf_threshold: 0.5
++++
++++# Dataset settings
++++datasets:
++++  train:
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: train+val
++++      img_size: [360, 640]
++++      normalize: true
++++      aug_chance: 0.9090909090909091 # 10/11
++++      augmentations:
++++       - name: Affine
++++         parameters:
++++           rotate: !!python/tuple [-10, 10]
++++       - name: HorizontalFlip
++++         parameters:
++++           p: 0.5
++++       - name: CropToFixedSize
++++         parameters:
++++           width: 1152
++++           height: 648
++++      root: "datasets/tusimple"
++++
++++  test: &test
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: test
++++      img_size: [360, 640]
++++      root: "datasets/tusimple"
++++      normalize: true
++++      augmentations: []
++++
++++  # val = test
++++  val:
++++    <<: *test
++++
++++
++++[2021-02-13 21:14:06,293] [INFO] Args:
++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++
+++[2021-02-13 21:14:09,137] [INFO] Starting testing.
+++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 159, in <module>
+++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+++  File "test.py", line 23, in test
+++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
+++    with _open_file_like(f, 'rb') as opened_file:
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
+++    return _open_file(name_or_buffer, mode)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++    super(_open_file, self).__init__(open(name, mode))
+++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
+++[2021-02-13 21:38:00,624] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:38:00,624] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 21:38:03,495] [INFO] Starting testing.
++[2021-02-13 21:38:03,670] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 34, in test
++    for idx, (images, labels, img_idxs) in enumerate(test_loader):
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
++    data = self._next_data()
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
++    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
++    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
++AttributeError: 'NoneType' object has no attribute 'shape'
++[2021-02-13 22:08:48,278] [INFO] Experiment name: tusimple
++[2021-02-13 22:08:48,278] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 22:08:48,278] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 22:08:50,446] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 141, in <module>
++    test_dataset = cfg.get_dataset("test")
++  File "/workspace/lib/config.py", line 22, in get_dataset
++    return getattr(datasets,
++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
++    self.dataset = TuSimple(split=split, **kwargs)
++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
++    self.load_annotations()
++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
++    with open(anno_file, 'r') as anno_obj:
++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
++[2021-02-13 23:11:37,369] [INFO] Experiment name: tusimple
++[2021-02-13 23:11:37,412] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:11:37,413] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 23:12:15,411] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 141, in <module>
++    test_dataset = cfg.get_dataset("test")
++  File "/workspace/lib/config.py", line 22, in get_dataset
++    return getattr(datasets,
++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
++    self.dataset = TuSimple(split=split, **kwargs)
++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
++    self.load_annotations()
++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
++    with open(anno_file, 'r') as anno_obj:
++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
++[2021-02-13 23:28:09,387] [INFO] Experiment name: tusimple
++[2021-02-13 23:28:09,461] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple/training"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple/test"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:28:09,461] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 23:29:14,830] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 137, in <module>
++    model = cfg.get_model().to(device)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 425, in to
++    return self._apply(convert)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
++    module._apply(fn)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
++    module._apply(fn)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 223, in _apply
++    param_applied = fn(param)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 423, in convert
++    return t.to(device, dtype if t.is_floating_point() else None, non_blocking)
++KeyboardInterrupt
++[2021-02-13 23:30:10,333] [INFO] Experiment name: tusimple
++[2021-02-13 23:30:10,333] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple/training"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple/test"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:30:10,333] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+
+[2021-02-13 23:30:15,326] [INFO] Starting testing.
+[2021-02-13 23:30:20,577] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 159, in <module>
+    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+  File "test.py", line 34, in test
+    for idx, (images, labels, img_idxs) in enumerate(test_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
+    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
+[2021-02-13 23:39:55,039] [INFO] Experiment name: tusimple
+[2021-02-13 23:39:55,039] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple/training"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "datasets/tusimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+
+[2021-02-13 23:39:55,039] [INFO] Args:
+Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+[2021-02-13 23:39:58,140] [INFO] Code state:
+ Git hash: c0886bb88797affc615fca4963461bc829bc7886
+
+*************
+Git diff:
+*************
+diff --git a/experiments/tusimple/.config.yaml.swp b/experiments/tusimple/.config.yaml.swp
+index 0da5709..c7b24c5 100644
+Binary files a/experiments/tusimple/.config.yaml.swp and b/experiments/tusimple/.config.yaml.swp differ
+diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+index c3e5846..dcbd42d 100644
+--- a/experiments/tusimple/test_log.txt
++++ b/experiments/tusimple/test_log.txt
+@@ -489,3 +489,1941 @@ Traceback (most recent call last):
+   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+     super(_open_file, self).__init__(open(name, mode))
+ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++[2021-02-13 21:14:06,293] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:14:06,293] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 21:14:09,136] [INFO] Code state:
++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..92158b8 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,81 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 21:14:09,137] [INFO] Starting testing.
++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 23, in test
++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
++    with _open_file_like(f, 'rb') as opened_file:
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
++    return _open_file(name_or_buffer, mode)
++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++    super(_open_file, self).__init__(open(name, mode))
++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
++[2021-02-13 21:38:00,624] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 21:38:00,624] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 21:38:03,494] [INFO] Code state:
++ Git hash: c0886bb88797affc615fca4963461bc829bc7886
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..29299d3 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,266 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 21:14:09,136] [INFO] Code state:
+++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
+++
+++*************
+++Git diff:
+++*************
+++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+++index c3e5846..92158b8 100644
+++--- a/experiments/tusimple/test_log.txt
++++++ b/experiments/tusimple/test_log.txt
+++@@ -489,3 +489,81 @@ Traceback (most recent call last):
+++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++     super(_open_file, self).__init__(open(name, mode))
+++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++++[2021-02-13 21:14:06,293] [INFO] Config:
++++# Training settings
++++seed: 0
++++exps_dir: 'experiments'
++++iter_log_interval: 1
++++iter_time_window: 100
++++model_save_interval: 1
++++backup:
++++model:
++++  name: PolyRegression
++++  parameters:
++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++++    pretrained: true
++++    backbone: 'efficientnet-b0'
++++    pred_category: false
++++    curriculum_steps: [0, 0, 0, 0]
++++loss_parameters:
++++  conf_weight: 1
++++  lower_weight: 1
++++  upper_weight: 1
++++  cls_weight: 0
++++  poly_weight: 300
++++batch_size: 16
++++epochs: 2695
++++optimizer:
++++  name: Adam
++++  parameters:
++++    lr: 3.0e-4
++++lr_scheduler:
++++  name: CosineAnnealingLR
++++  parameters:
++++    T_max: 385
++++
++++# Testing settings
++++test_parameters:
++++  conf_threshold: 0.5
++++
++++# Dataset settings
++++datasets:
++++  train:
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: train+val
++++      img_size: [360, 640]
++++      normalize: true
++++      aug_chance: 0.9090909090909091 # 10/11
++++      augmentations:
++++       - name: Affine
++++         parameters:
++++           rotate: !!python/tuple [-10, 10]
++++       - name: HorizontalFlip
++++         parameters:
++++           p: 0.5
++++       - name: CropToFixedSize
++++         parameters:
++++           width: 1152
++++           height: 648
++++      root: "datasets/tusimple"
++++
++++  test: &test
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: test
++++      img_size: [360, 640]
++++      root: "datasets/tusimple"
++++      normalize: true
++++      augmentations: []
++++
++++  # val = test
++++  val:
++++    <<: *test
++++
++++
++++[2021-02-13 21:14:06,293] [INFO] Args:
++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++
+++[2021-02-13 21:14:09,137] [INFO] Starting testing.
+++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 159, in <module>
+++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+++  File "test.py", line 23, in test
+++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
+++    with _open_file_like(f, 'rb') as opened_file:
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
+++    return _open_file(name_or_buffer, mode)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++    super(_open_file, self).__init__(open(name, mode))
+++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
+++[2021-02-13 21:38:00,624] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:38:00,624] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 21:38:03,495] [INFO] Starting testing.
++[2021-02-13 21:38:03,670] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 34, in test
++    for idx, (images, labels, img_idxs) in enumerate(test_loader):
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
++    data = self._next_data()
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
++    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
++    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
++AttributeError: 'NoneType' object has no attribute 'shape'
++[2021-02-13 22:08:48,278] [INFO] Experiment name: tusimple
++[2021-02-13 22:08:48,278] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 22:08:48,278] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 22:08:50,446] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 141, in <module>
++    test_dataset = cfg.get_dataset("test")
++  File "/workspace/lib/config.py", line 22, in get_dataset
++    return getattr(datasets,
++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
++    self.dataset = TuSimple(split=split, **kwargs)
++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
++    self.load_annotations()
++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
++    with open(anno_file, 'r') as anno_obj:
++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
++[2021-02-13 23:11:37,369] [INFO] Experiment name: tusimple
++[2021-02-13 23:11:37,412] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:11:37,413] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 23:12:15,411] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 141, in <module>
++    test_dataset = cfg.get_dataset("test")
++  File "/workspace/lib/config.py", line 22, in get_dataset
++    return getattr(datasets,
++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
++    self.dataset = TuSimple(split=split, **kwargs)
++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
++    self.load_annotations()
++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
++    with open(anno_file, 'r') as anno_obj:
++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
++[2021-02-13 23:28:09,387] [INFO] Experiment name: tusimple
++[2021-02-13 23:28:09,461] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple/training"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple/test"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:28:09,461] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 23:29:14,830] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 137, in <module>
++    model = cfg.get_model().to(device)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 425, in to
++    return self._apply(convert)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
++    module._apply(fn)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
++    module._apply(fn)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 223, in _apply
++    param_applied = fn(param)
++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 423, in convert
++    return t.to(device, dtype if t.is_floating_point() else None, non_blocking)
++KeyboardInterrupt
++[2021-02-13 23:30:10,333] [INFO] Experiment name: tusimple
++[2021-02-13 23:30:10,333] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple/training"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple/test"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:30:10,333] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++[2021-02-13 23:30:15,324] [INFO] Code state:
++ Git hash: c0886bb88797affc615fca4963461bc829bc7886
++
++*************
++Git diff:
++*************
++diff --git a/experiments/tusimple/.config.yaml.swp b/experiments/tusimple/.config.yaml.swp
++index 0da5709..c7b24c5 100644
++Binary files a/experiments/tusimple/.config.yaml.swp and b/experiments/tusimple/.config.yaml.swp differ
++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++index c3e5846..dbd844c 100644
++--- a/experiments/tusimple/test_log.txt
+++++ b/experiments/tusimple/test_log.txt
++@@ -489,3 +489,915 @@ Traceback (most recent call last):
++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++     super(_open_file, self).__init__(open(name, mode))
++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++[2021-02-13 21:14:06,293] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:14:06,293] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 21:14:09,136] [INFO] Code state:
+++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
+++
+++*************
+++Git diff:
+++*************
+++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+++index c3e5846..92158b8 100644
+++--- a/experiments/tusimple/test_log.txt
++++++ b/experiments/tusimple/test_log.txt
+++@@ -489,3 +489,81 @@ Traceback (most recent call last):
+++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++     super(_open_file, self).__init__(open(name, mode))
+++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++++[2021-02-13 21:14:06,293] [INFO] Config:
++++# Training settings
++++seed: 0
++++exps_dir: 'experiments'
++++iter_log_interval: 1
++++iter_time_window: 100
++++model_save_interval: 1
++++backup:
++++model:
++++  name: PolyRegression
++++  parameters:
++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++++    pretrained: true
++++    backbone: 'efficientnet-b0'
++++    pred_category: false
++++    curriculum_steps: [0, 0, 0, 0]
++++loss_parameters:
++++  conf_weight: 1
++++  lower_weight: 1
++++  upper_weight: 1
++++  cls_weight: 0
++++  poly_weight: 300
++++batch_size: 16
++++epochs: 2695
++++optimizer:
++++  name: Adam
++++  parameters:
++++    lr: 3.0e-4
++++lr_scheduler:
++++  name: CosineAnnealingLR
++++  parameters:
++++    T_max: 385
++++
++++# Testing settings
++++test_parameters:
++++  conf_threshold: 0.5
++++
++++# Dataset settings
++++datasets:
++++  train:
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: train+val
++++      img_size: [360, 640]
++++      normalize: true
++++      aug_chance: 0.9090909090909091 # 10/11
++++      augmentations:
++++       - name: Affine
++++         parameters:
++++           rotate: !!python/tuple [-10, 10]
++++       - name: HorizontalFlip
++++         parameters:
++++           p: 0.5
++++       - name: CropToFixedSize
++++         parameters:
++++           width: 1152
++++           height: 648
++++      root: "datasets/tusimple"
++++
++++  test: &test
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: test
++++      img_size: [360, 640]
++++      root: "datasets/tusimple"
++++      normalize: true
++++      augmentations: []
++++
++++  # val = test
++++  val:
++++    <<: *test
++++
++++
++++[2021-02-13 21:14:06,293] [INFO] Args:
++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++
+++[2021-02-13 21:14:09,137] [INFO] Starting testing.
+++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 159, in <module>
+++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+++  File "test.py", line 23, in test
+++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
+++    with _open_file_like(f, 'rb') as opened_file:
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
+++    return _open_file(name_or_buffer, mode)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++    super(_open_file, self).__init__(open(name, mode))
+++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
+++[2021-02-13 21:38:00,624] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 21:38:00,624] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 21:38:03,494] [INFO] Code state:
+++ Git hash: c0886bb88797affc615fca4963461bc829bc7886
+++
+++*************
+++Git diff:
+++*************
+++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
+++index c3e5846..29299d3 100644
+++--- a/experiments/tusimple/test_log.txt
++++++ b/experiments/tusimple/test_log.txt
+++@@ -489,3 +489,266 @@ Traceback (most recent call last):
+++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
+++     super(_open_file, self).__init__(open(name, mode))
+++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
++++[2021-02-13 21:14:06,293] [INFO] Config:
++++# Training settings
++++seed: 0
++++exps_dir: 'experiments'
++++iter_log_interval: 1
++++iter_time_window: 100
++++model_save_interval: 1
++++backup:
++++model:
++++  name: PolyRegression
++++  parameters:
++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++++    pretrained: true
++++    backbone: 'efficientnet-b0'
++++    pred_category: false
++++    curriculum_steps: [0, 0, 0, 0]
++++loss_parameters:
++++  conf_weight: 1
++++  lower_weight: 1
++++  upper_weight: 1
++++  cls_weight: 0
++++  poly_weight: 300
++++batch_size: 16
++++epochs: 2695
++++optimizer:
++++  name: Adam
++++  parameters:
++++    lr: 3.0e-4
++++lr_scheduler:
++++  name: CosineAnnealingLR
++++  parameters:
++++    T_max: 385
++++
++++# Testing settings
++++test_parameters:
++++  conf_threshold: 0.5
++++
++++# Dataset settings
++++datasets:
++++  train:
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: train+val
++++      img_size: [360, 640]
++++      normalize: true
++++      aug_chance: 0.9090909090909091 # 10/11
++++      augmentations:
++++       - name: Affine
++++         parameters:
++++           rotate: !!python/tuple [-10, 10]
++++       - name: HorizontalFlip
++++         parameters:
++++           p: 0.5
++++       - name: CropToFixedSize
++++         parameters:
++++           width: 1152
++++           height: 648
++++      root: "datasets/tusimple"
++++
++++  test: &test
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: test
++++      img_size: [360, 640]
++++      root: "datasets/tusimple"
++++      normalize: true
++++      augmentations: []
++++
++++  # val = test
++++  val:
++++    <<: *test
++++
++++
++++[2021-02-13 21:14:06,293] [INFO] Args:
++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++++[2021-02-13 21:14:09,136] [INFO] Code state:
++++ Git hash: 2c59bdae80c085ad95f38c79cf2032bfe37d888f
++++
++++*************
++++Git diff:
++++*************
++++diff --git a/experiments/tusimple/test_log.txt b/experiments/tusimple/test_log.txt
++++index c3e5846..92158b8 100644
++++--- a/experiments/tusimple/test_log.txt
+++++++ b/experiments/tusimple/test_log.txt
++++@@ -489,3 +489,81 @@ Traceback (most recent call last):
++++   File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++++     super(_open_file, self).__init__(open(name, mode))
++++ FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
+++++[2021-02-13 21:14:06,293] [INFO] Experiment name: tusimple
+++++[2021-02-13 21:14:06,293] [INFO] Config:
+++++# Training settings
+++++seed: 0
+++++exps_dir: 'experiments'
+++++iter_log_interval: 1
+++++iter_time_window: 100
+++++model_save_interval: 1
+++++backup:
+++++model:
+++++  name: PolyRegression
+++++  parameters:
+++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++++    pretrained: true
+++++    backbone: 'efficientnet-b0'
+++++    pred_category: false
+++++    curriculum_steps: [0, 0, 0, 0]
+++++loss_parameters:
+++++  conf_weight: 1
+++++  lower_weight: 1
+++++  upper_weight: 1
+++++  cls_weight: 0
+++++  poly_weight: 300
+++++batch_size: 16
+++++epochs: 2695
+++++optimizer:
+++++  name: Adam
+++++  parameters:
+++++    lr: 3.0e-4
+++++lr_scheduler:
+++++  name: CosineAnnealingLR
+++++  parameters:
+++++    T_max: 385
+++++
+++++# Testing settings
+++++test_parameters:
+++++  conf_threshold: 0.5
+++++
+++++# Dataset settings
+++++datasets:
+++++  train:
+++++    type: LaneDataset
+++++    parameters:
+++++      dataset: tusimple
+++++      split: train+val
+++++      img_size: [360, 640]
+++++      normalize: true
+++++      aug_chance: 0.9090909090909091 # 10/11
+++++      augmentations:
+++++       - name: Affine
+++++         parameters:
+++++           rotate: !!python/tuple [-10, 10]
+++++       - name: HorizontalFlip
+++++         parameters:
+++++           p: 0.5
+++++       - name: CropToFixedSize
+++++         parameters:
+++++           width: 1152
+++++           height: 648
+++++      root: "datasets/tusimple"
+++++
+++++  test: &test
+++++    type: LaneDataset
+++++    parameters:
+++++      dataset: tusimple
+++++      split: test
+++++      img_size: [360, 640]
+++++      root: "datasets/tusimple"
+++++      normalize: true
+++++      augmentations: []
+++++
+++++  # val = test
+++++  val:
+++++    <<: *test
+++++
+++++
+++++[2021-02-13 21:14:06,293] [INFO] Args:
+++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++++
++++[2021-02-13 21:14:09,137] [INFO] Starting testing.
++++[2021-02-13 21:14:09,137] [ERROR] Uncaught exception
++++Traceback (most recent call last):
++++  File "test.py", line 159, in <module>
++++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++++  File "test.py", line 23, in test
++++    model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
++++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 525, in load
++++    with _open_file_like(f, 'rb') as opened_file:
++++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 212, in _open_file_like
++++    return _open_file(name_or_buffer, mode)
++++  File "/miniconda3/lib/python3.8/site-packages/torch/serialization.py", line 193, in __init__
++++    super(_open_file, self).__init__(open(name, mode))
++++FileNotFoundError: [Errno 2] No such file or directory: 'experiments/tusimple/models/model_2695.pt'
++++[2021-02-13 21:38:00,624] [INFO] Experiment name: tusimple
++++[2021-02-13 21:38:00,624] [INFO] Config:
++++# Training settings
++++seed: 0
++++exps_dir: 'experiments'
++++iter_log_interval: 1
++++iter_time_window: 100
++++model_save_interval: 1
++++backup:
++++model:
++++  name: PolyRegression
++++  parameters:
++++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++++    pretrained: true
++++    backbone: 'efficientnet-b0'
++++    pred_category: false
++++    curriculum_steps: [0, 0, 0, 0]
++++loss_parameters:
++++  conf_weight: 1
++++  lower_weight: 1
++++  upper_weight: 1
++++  cls_weight: 0
++++  poly_weight: 300
++++batch_size: 16
++++epochs: 2695
++++optimizer:
++++  name: Adam
++++  parameters:
++++    lr: 3.0e-4
++++lr_scheduler:
++++  name: CosineAnnealingLR
++++  parameters:
++++    T_max: 385
++++
++++# Testing settings
++++test_parameters:
++++  conf_threshold: 0.5
++++
++++# Dataset settings
++++datasets:
++++  train:
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: train+val
++++      img_size: [360, 640]
++++      normalize: true
++++      aug_chance: 0.9090909090909091 # 10/11
++++      augmentations:
++++       - name: Affine
++++         parameters:
++++           rotate: !!python/tuple [-10, 10]
++++       - name: HorizontalFlip
++++         parameters:
++++           p: 0.5
++++       - name: CropToFixedSize
++++         parameters:
++++           width: 1152
++++           height: 648
++++      root: "datasets/tusimple"
++++
++++  test: &test
++++    type: LaneDataset
++++    parameters:
++++      dataset: tusimple
++++      split: test
++++      img_size: [360, 640]
++++      root: "datasets/tusimple"
++++      normalize: true
++++      augmentations: []
++++
++++  # val = test
++++  val:
++++    <<: *test
++++
++++
++++[2021-02-13 21:38:00,624] [INFO] Args:
++++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++
+++[2021-02-13 21:38:03,495] [INFO] Starting testing.
+++[2021-02-13 21:38:03,670] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 159, in <module>
+++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+++  File "test.py", line 34, in test
+++    for idx, (images, labels, img_idxs) in enumerate(test_loader):
+++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+++    data = self._next_data()
+++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
+++    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+++    data = [self.dataset[idx] for idx in possibly_batched_index]
+++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+++    data = [self.dataset[idx] for idx in possibly_batched_index]
+++  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
+++    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
+++AttributeError: 'NoneType' object has no attribute 'shape'
+++[2021-02-13 22:08:48,278] [INFO] Experiment name: tusimple
+++[2021-02-13 22:08:48,278] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 22:08:48,278] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 22:08:50,446] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 141, in <module>
+++    test_dataset = cfg.get_dataset("test")
+++  File "/workspace/lib/config.py", line 22, in get_dataset
+++    return getattr(datasets,
+++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+++    self.dataset = TuSimple(split=split, **kwargs)
+++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+++    self.load_annotations()
+++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+++    with open(anno_file, 'r') as anno_obj:
+++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
+++[2021-02-13 23:11:37,369] [INFO] Experiment name: tusimple
+++[2021-02-13 23:11:37,412] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 23:11:37,413] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 23:12:15,411] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 141, in <module>
+++    test_dataset = cfg.get_dataset("test")
+++  File "/workspace/lib/config.py", line 22, in get_dataset
+++    return getattr(datasets,
+++  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+++    self.dataset = TuSimple(split=split, **kwargs)
+++  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+++    self.load_annotations()
+++  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+++    with open(anno_file, 'r') as anno_obj:
+++FileNotFoundError: [Errno 2] No such file or directory: 'datasets/tusimple/test_label.json'
+++[2021-02-13 23:28:09,387] [INFO] Experiment name: tusimple
+++[2021-02-13 23:28:09,461] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple/training"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple/test"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 23:28:09,461] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+++[2021-02-13 23:29:14,830] [ERROR] Uncaught exception
+++Traceback (most recent call last):
+++  File "test.py", line 137, in <module>
+++    model = cfg.get_model().to(device)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 425, in to
+++    return self._apply(convert)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
+++    module._apply(fn)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 201, in _apply
+++    module._apply(fn)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 223, in _apply
+++    param_applied = fn(param)
+++  File "/miniconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 423, in convert
+++    return t.to(device, dtype if t.is_floating_point() else None, non_blocking)
+++KeyboardInterrupt
+++[2021-02-13 23:30:10,333] [INFO] Experiment name: tusimple
+++[2021-02-13 23:30:10,333] [INFO] Config:
+++# Training settings
+++seed: 0
+++exps_dir: 'experiments'
+++iter_log_interval: 1
+++iter_time_window: 100
+++model_save_interval: 1
+++backup:
+++model:
+++  name: PolyRegression
+++  parameters:
+++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+++    pretrained: true
+++    backbone: 'efficientnet-b0'
+++    pred_category: false
+++    curriculum_steps: [0, 0, 0, 0]
+++loss_parameters:
+++  conf_weight: 1
+++  lower_weight: 1
+++  upper_weight: 1
+++  cls_weight: 0
+++  poly_weight: 300
+++batch_size: 16
+++epochs: 2695
+++optimizer:
+++  name: Adam
+++  parameters:
+++    lr: 3.0e-4
+++lr_scheduler:
+++  name: CosineAnnealingLR
+++  parameters:
+++    T_max: 385
+++
+++# Testing settings
+++test_parameters:
+++  conf_threshold: 0.5
+++
+++# Dataset settings
+++datasets:
+++  train:
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: train+val
+++      img_size: [360, 640]
+++      normalize: true
+++      aug_chance: 0.9090909090909091 # 10/11
+++      augmentations:
+++       - name: Affine
+++         parameters:
+++           rotate: !!python/tuple [-10, 10]
+++       - name: HorizontalFlip
+++         parameters:
+++           p: 0.5
+++       - name: CropToFixedSize
+++         parameters:
+++           width: 1152
+++           height: 648
+++      root: "datasets/tusimple/training"
+++
+++  test: &test
+++    type: LaneDataset
+++    parameters:
+++      dataset: tusimple
+++      split: test
+++      img_size: [360, 640]
+++      root: "datasets/tusimple/test"
+++      normalize: true
+++      augmentations: []
+++
+++  # val = test
+++  val:
+++    <<: *test
+++
+++
+++[2021-02-13 23:30:10,333] [INFO] Args:
+++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
++
++[2021-02-13 23:30:15,326] [INFO] Starting testing.
++[2021-02-13 23:30:20,577] [ERROR] Uncaught exception
++Traceback (most recent call last):
++  File "test.py", line 159, in <module>
++    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
++  File "test.py", line 34, in test
++    for idx, (images, labels, img_idxs) in enumerate(test_loader):
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
++    data = self._next_data()
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
++    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
++    data = [self.dataset[idx] for idx in possibly_batched_index]
++  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
++    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
++AttributeError: 'NoneType' object has no attribute 'shape'
++[2021-02-13 23:39:55,039] [INFO] Experiment name: tusimple
++[2021-02-13 23:39:55,039] [INFO] Config:
++# Training settings
++seed: 0
++exps_dir: 'experiments'
++iter_log_interval: 1
++iter_time_window: 100
++model_save_interval: 1
++backup:
++model:
++  name: PolyRegression
++  parameters:
++    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
++    pretrained: true
++    backbone: 'efficientnet-b0'
++    pred_category: false
++    curriculum_steps: [0, 0, 0, 0]
++loss_parameters:
++  conf_weight: 1
++  lower_weight: 1
++  upper_weight: 1
++  cls_weight: 0
++  poly_weight: 300
++batch_size: 16
++epochs: 2695
++optimizer:
++  name: Adam
++  parameters:
++    lr: 3.0e-4
++lr_scheduler:
++  name: CosineAnnealingLR
++  parameters:
++    T_max: 385
++
++# Testing settings
++test_parameters:
++  conf_threshold: 0.5
++
++# Dataset settings
++datasets:
++  train:
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: train+val
++      img_size: [360, 640]
++      normalize: true
++      aug_chance: 0.9090909090909091 # 10/11
++      augmentations:
++       - name: Affine
++         parameters:
++           rotate: !!python/tuple [-10, 10]
++       - name: HorizontalFlip
++         parameters:
++           p: 0.5
++       - name: CropToFixedSize
++         parameters:
++           width: 1152
++           height: 648
++      root: "datasets/tusimple/training"
++
++  test: &test
++    type: LaneDataset
++    parameters:
++      dataset: tusimple
++      split: test
++      img_size: [360, 640]
++      root: "datasets/tusimple/test"
++      normalize: true
++      augmentations: []
++
++  # val = test
++  val:
++    <<: *test
++
++
++[2021-02-13 23:39:55,039] [INFO] Args:
++Namespace(batch_size=None, cfg='experiments/tusimple/config.yaml', epoch=2695, exp_name='tusimple', view=False)
+diff --git a/test.py b/test.py
+index c8581ed..d20eb30 100644
+--- a/test.py
++++ b/test.py
+@@ -20,7 +20,7 @@ def test(model, test_loader, evaluator, exp_root, cfg, view, epoch, max_batches=
+ 
+     # Test the model
+     if epoch > 0:
+-        model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)) , map_location='cpu')['model'])
++        model.load_state_dict(torch.load(os.path.join(exp_root, "models", "model_{:03d}.pt".format(epoch)))['model'])
+ 
+     model.eval()
+     criterion_parameters = cfg.get_loss_parameters()
+
+[2021-02-13 23:39:58,143] [INFO] Starting testing.
+[2021-02-13 23:39:58,346] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "test.py", line 159, in <module>
+    _, mean_loss = test(model, test_loader, evaluator, exp_root, cfg, epoch=test_epoch, view=args.view)
+  File "test.py", line 34, in test
+    for idx, (images, labels, img_idxs) in enumerate(test_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 385, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/workspace/lib/datasets/lane_dataset.py", line 208, in __getitem__
+    line_strings = LineStringsOnImage(line_strings, shape=img.shape)
+AttributeError: 'NoneType' object has no attribute 'shape'
