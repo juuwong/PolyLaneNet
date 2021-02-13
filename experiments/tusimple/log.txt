@@ -1,0 +1,831 @@
+[2021-02-06 01:56:30,276] [INFO] Experiment name: tusimple
+[2021-02-06 01:56:30,277] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "/EEC193/data/TuSimple/training"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-06 01:56:30,277] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-06 01:56:30,277] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "train.py", line 201, in <module>
+    train_dataset = cfg.get_dataset("train")
+  File "/workspace/lib/config.py", line 22, in get_dataset
+    return getattr(datasets,
+  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+FileNotFoundError: [Errno 2] No such file or directory: '/EEC193/data/TuSimple/training/label_data_0313.json'
+[2021-02-06 02:15:05,392] [INFO] Experiment name: tusimple
+[2021-02-06 02:15:05,393] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "../datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-06 02:15:05,393] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-06 02:15:05,393] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "train.py", line 201, in <module>
+    train_dataset = cfg.get_dataset("train")
+  File "/workspace/lib/config.py", line 22, in get_dataset
+    return getattr(datasets,
+  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+FileNotFoundError: [Errno 2] No such file or directory: '../datasets/tusimple/label_data_0313.json'
+[2021-02-06 02:18:20,253] [INFO] Experiment name: tusimple
+[2021-02-06 02:18:20,253] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-06 02:18:20,253] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-06 02:18:26,095] [INFO] Starting training.
+[2021-02-06 02:18:26,095] [INFO] Beginning epoch 1
+[2021-02-06 02:18:29,805] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "train.py", line 231, in <module>
+    model = train(
+  File "train.py", line 60, in train
+    optimizer.step()
+  File "/miniconda3/lib/python3.8/site-packages/torch/optim/lr_scheduler.py", line 66, in wrapper
+    return wrapped(*args, **kwargs)
+  File "/miniconda3/lib/python3.8/site-packages/torch/optim/adam.py", line 77, in step
+    state['exp_avg_sq'] = torch.zeros_like(p.data, memory_format=torch.preserve_format)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 268) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.
+[2021-02-12 02:16:34,481] [INFO] Experiment name: tusimple
+[2021-02-12 02:16:34,482] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-12 02:16:34,482] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-12 02:16:47,202] [INFO] Starting training.
+[2021-02-12 02:16:47,202] [INFO] Beginning epoch 1
+[2021-02-12 02:16:52,385] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "train.py", line 231, in <module>
+    model = train(
+  File "train.py", line 46, in train
+    for i, (images, labels, img_idxs) in enumerate(train_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 856, in _next_data
+    return self._process_data(data)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 881, in _process_data
+    data.reraise()
+  File "/miniconda3/lib/python3.8/site-packages/torch/_utils.py", line 394, in reraise
+    raise self.exc_type(msg)
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/worker.py", line 178, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 47, in fetch
+    return self.collate_fn(data)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/collate.py", line 79, in default_collate
+    return [default_collate(samples) for samples in transposed]
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/collate.py", line 79, in <listcomp>
+    return [default_collate(samples) for samples in transposed]
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/collate.py", line 53, in default_collate
+    storage = elem.storage()._new_shared(numel)
+  File "/miniconda3/lib/python3.8/site-packages/torch/storage.py", line 130, in _new_shared
+    return cls._new_using_fd(size)
+RuntimeError: unable to write to file </torch_45_1198204542>
+
+[2021-02-12 02:25:42,227] [INFO] Experiment name: tusimple
+[2021-02-12 02:25:42,229] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-12 02:25:42,241] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-12 02:25:45,157] [INFO] Starting training.
+[2021-02-12 02:25:45,157] [INFO] Beginning epoch 1
+[2021-02-12 02:25:46,846] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 761, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/queues.py", line 107, in get
+    if not self._poll(timeout):
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/miniconda3/lib/python3.8/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 129) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "train.py", line 231, in <module>
+    model = train(
+  File "train.py", line 46, in train
+    for i, (images, labels, img_idxs) in enumerate(train_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 841, in _next_data
+    idx, data = self._get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 808, in _get_data
+    success, data = self._try_get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 774, in _try_get_data
+    raise RuntimeError('DataLoader worker (pid(s) {}) exited unexpectedly'.format(pids_str))
+RuntimeError: DataLoader worker (pid(s) 129) exited unexpectedly
+[2021-02-12 02:26:53,145] [INFO] Experiment name: tusimple
+[2021-02-12 02:26:53,145] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-12 02:26:53,160] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-12 02:26:56,087] [INFO] Starting training.
+[2021-02-12 02:26:56,087] [INFO] Beginning epoch 1
+[2021-02-12 02:26:58,302] [INFO] Epoch [1/2695], Step [1/227], Loss: 105.9413 (conf: 0.6923, lower: 0.1043, upper: 0.8436, poly: 104.3011, cls_loss: 0.0000), s/iter: 1.0884, lr: 3.0e-04
+[2021-02-12 02:26:59,472] [INFO] Epoch [1/2695], Step [2/227], Loss: 82.8152 (conf: 0.6811, lower: 0.0874, upper: 0.7484, poly: 58.1722, cls_loss: 0.0000), s/iter: 0.7146, lr: 3.0e-04
+[2021-02-12 02:27:00,721] [INFO] Epoch [1/2695], Step [3/227], Loss: 69.3102 (conf: 0.6588, lower: 0.0528, upper: 0.6444, poly: 40.9444, cls_loss: 0.0000), s/iter: 0.5850, lr: 3.0e-04
+[2021-02-12 02:27:01,809] [INFO] Epoch [1/2695], Step [4/227], Loss: 59.3794 (conf: 0.6388, lower: 0.0535, upper: 0.6070, poly: 28.2876, cls_loss: 0.0000), s/iter: 0.5212, lr: 3.0e-04
+[2021-02-12 02:27:03,086] [INFO] Epoch [1/2695], Step [5/227], Loss: 52.6867 (conf: 0.6206, lower: 0.0325, upper: 0.5001, poly: 24.7627, cls_loss: 0.0000), s/iter: 0.4952, lr: 3.0e-04
+[2021-02-12 02:27:04,172] [INFO] Epoch [1/2695], Step [6/227], Loss: 48.6201 (conf: 0.5919, lower: 0.0158, upper: 0.4410, poly: 27.2387, cls_loss: 0.0000), s/iter: 0.4686, lr: 3.0e-04
+[2021-02-12 02:27:05,176] [INFO] Epoch [1/2695], Step [7/227], Loss: 45.5003 (conf: 0.5855, lower: 0.0285, upper: 0.4194, poly: 25.7479, cls_loss: 0.0000), s/iter: 0.4487, lr: 3.0e-04
+[2021-02-12 02:27:06,358] [INFO] Epoch [1/2695], Step [8/227], Loss: 42.4660 (conf: 0.5746, lower: 0.0108, upper: 0.3612, poly: 20.2795, cls_loss: 0.0000), s/iter: 0.4343, lr: 3.0e-04
+[2021-02-12 02:27:07,750] [INFO] Epoch [1/2695], Step [9/227], Loss: 40.1669 (conf: 0.5542, lower: 0.0301, upper: 0.2986, poly: 20.8907, cls_loss: 0.0000), s/iter: 0.4269, lr: 3.0e-04
+[2021-02-12 02:27:09,090] [INFO] Epoch [1/2695], Step [10/227], Loss: 38.1441 (conf: 0.5427, lower: 0.0124, upper: 0.2630, poly: 19.1212, cls_loss: 0.0000), s/iter: 0.4168, lr: 3.0e-04
+[2021-02-12 02:27:10,369] [INFO] Epoch [1/2695], Step [11/227], Loss: 36.5567 (conf: 0.5332, lower: 0.0146, upper: 0.2505, poly: 19.8844, cls_loss: 0.0000), s/iter: 0.4087, lr: 3.0e-04
+[2021-02-12 02:27:11,592] [INFO] Epoch [1/2695], Step [12/227], Loss: 34.8041 (conf: 0.5233, lower: 0.0100, upper: 0.2106, poly: 14.7810, cls_loss: 0.0000), s/iter: 0.4019, lr: 3.0e-04
+[2021-02-12 02:27:13,203] [INFO] Epoch [1/2695], Step [13/227], Loss: 33.4205 (conf: 0.5178, lower: 0.0262, upper: 0.2349, poly: 16.0390, cls_loss: 0.0000), s/iter: 0.3960, lr: 3.0e-04
+[2021-02-12 02:27:14,632] [INFO] Epoch [1/2695], Step [14/227], Loss: 32.4141 (conf: 0.5089, lower: 0.0163, upper: 0.1933, poly: 18.6119, cls_loss: 0.0000), s/iter: 0.3942, lr: 3.0e-04
+[2021-02-12 02:27:15,960] [INFO] Epoch [1/2695], Step [15/227], Loss: 31.3905 (conf: 0.4951, lower: 0.0168, upper: 0.1668, poly: 16.3820, cls_loss: 0.0000), s/iter: 0.3926, lr: 3.0e-04
+[2021-02-12 02:27:17,138] [INFO] Epoch [1/2695], Step [16/227], Loss: 30.5716 (conf: 0.5009, lower: 0.0133, upper: 0.1707, poly: 17.6031, cls_loss: 0.0000), s/iter: 0.3884, lr: 3.0e-04
+[2021-02-12 02:27:18,680] [INFO] Epoch [1/2695], Step [17/227], Loss: 29.9339 (conf: 0.5212, lower: 0.0155, upper: 0.1681, poly: 19.0255, cls_loss: 0.0000), s/iter: 0.3874, lr: 3.0e-04
+[2021-02-12 02:27:19,403] [INFO] Training session terminated.
+[2021-02-12 02:27:19,404] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "train.py", line 246, in <module>
+    test_dataset = cfg.get_dataset("test")
+  File "/workspace/lib/config.py", line 22, in get_dataset
+    return getattr(datasets,
+  File "/workspace/lib/datasets/lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+  File "/workspace/lib/datasets/tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "/workspace/lib/datasets/tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+FileNotFoundError: [Errno 2] No such file or directory: '/EEC193/data/TuSimple/test/test_label.json'
+[2021-02-12 02:30:18,907] [INFO] Experiment name: tusimple
+[2021-02-12 02:30:18,907] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-12 02:30:18,908] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-12 02:30:22,104] [INFO] Starting training.
+[2021-02-12 02:30:22,104] [INFO] Beginning epoch 1
+[2021-02-12 02:30:23,937] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 761, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/queues.py", line 107, in get
+    if not self._poll(timeout):
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/miniconda3/lib/python3.8/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 208) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "train.py", line 231, in <module>
+    model = train(
+  File "train.py", line 46, in train
+    for i, (images, labels, img_idxs) in enumerate(train_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 841, in _next_data
+    idx, data = self._get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 808, in _get_data
+    success, data = self._try_get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 774, in _try_get_data
+    raise RuntimeError('DataLoader worker (pid(s) {}) exited unexpectedly'.format(pids_str))
+RuntimeError: DataLoader worker (pid(s) 208) exited unexpectedly
+[2021-02-12 02:33:38,547] [INFO] Experiment name: tusimple
+[2021-02-12 02:33:38,547] [INFO] Config:
+# Training settings
+seed: 0
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'efficientnet-b0'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 300
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train+val
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "datasets/tusimple"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: test
+      img_size: [360, 640]
+      root: "/EEC193/data/TuSimple/test"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2021-02-12 02:33:38,547] [INFO] Args:
+Namespace(cfg='cfgs/modified_atlas_tusimple_fulltrain.yaml', deterministic=False, exp_name='tusimple', resume=False, validate=False)
+[2021-02-12 02:33:41,539] [INFO] Starting training.
+[2021-02-12 02:33:41,539] [INFO] Beginning epoch 1
+[2021-02-12 02:33:42,935] [INFO] Epoch [1/2695], Step [1/227], Loss: 105.9413 (conf: 0.6923, lower: 0.1043, upper: 0.8436, poly: 104.3011, cls_loss: 0.0000), s/iter: 0.4138, lr: 3.0e-04
+[2021-02-12 02:33:43,499] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 761, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/queues.py", line 107, in get
+    if not self._poll(timeout):
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/miniconda3/lib/python3.8/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/miniconda3/lib/python3.8/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 246) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "train.py", line 231, in <module>
+    model = train(
+  File "train.py", line 46, in train
+    for i, (images, labels, img_idxs) in enumerate(train_loader):
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 345, in __next__
+    data = self._next_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 841, in _next_data
+    idx, data = self._get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 808, in _get_data
+    success, data = self._try_get_data()
+  File "/miniconda3/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 774, in _try_get_data
+    raise RuntimeError('DataLoader worker (pid(s) {}) exited unexpectedly'.format(pids_str))
+RuntimeError: DataLoader worker (pid(s) 246) exited unexpectedly

@@ -1,0 +1,35 @@
+Git hash: a84446639d720d65337fa1ea5aefd5eec4f400cc
+
+*************
+Git diff:
+*************
+diff --git a/train.py b/train.py
+index 3753aed..37ab72b 100644
+--- a/train.py
++++ b/train.py
+@@ -218,14 +218,14 @@ if __name__ == "__main__":
+     train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
+                                                batch_size=batch_size,
+                                                shuffle=True,
+-                                               num_workers=8)
++                                               num_workers=1)
+ 
+     if args.validate:
+         val_dataset = cfg.get_dataset("val")
+         val_loader = torch.utils.data.DataLoader(dataset=val_dataset,
+                                                  batch_size=batch_size,
+                                                  shuffle=False,
+-                                                 num_workers=8)
++                                                 num_workers=1)
+     # Train regressor
+     try:
+         model = train(
+@@ -248,7 +248,7 @@ if __name__ == "__main__":
+     test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
+                                               batch_size=batch_size,
+                                               shuffle=False,
+-                                              num_workers=8)
++                                              num_workers=1)
+ 
+     evaluator = Evaluator(test_loader.dataset, exp_root)
+ 
