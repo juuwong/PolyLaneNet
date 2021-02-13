@@ -6,3 +6,4 @@ config.yaml
 lib/nms/build/
 lib/nms/dist/
 cfgs/modified_atlas_tusimple_fulltrain.yaml
+experiments/tusimple/test_log.txt
