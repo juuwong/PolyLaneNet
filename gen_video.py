@@ -1,4 +1,5 @@
 import pickle
+import torch
 import argparse
 
 import cv2
@@ -41,7 +42,7 @@ def main():
         video = create_video(args.out, width, height)
     add_cover_img(video, args.cover)
     with open(args.pred, "rb") as pred_file:
-        predictions = pickle.load(pred_file)
+        predictions = torch.load(pred_file)
 
     for idx, pred in tqdm(zip(range(len(dataset)), predictions), total=len(dataset)):
         if idx < 2200: continue
