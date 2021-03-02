@@ -30,6 +30,15 @@ def test(model, test_loader, evaluator, exp_root, cfg, view, epoch, max_batches=
     total_iters = 0
     test_t0 = time()
     loss_dict = {}
+
+    # If we specified --view in terminal command generate VideoWriter object
+    if view:
+        cap = cv2.VideoCapture(0)
+        # Define the 4-byte video codec. more at fourcc.org
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        # cv2.VideoWriter(output filename , fourcc code, FPS (TuSimple is 20 FPS), Output size (640x360 for TuSimple), optional color attribute)
+        out = cv2.VideoWriter('output.avi',fourcc, 20.0, (640,360))
+
     with torch.no_grad():
         for idx, (images, labels, img_idxs) in enumerate(test_loader):
             if max_batches is not None and idx >= max_batches:
@@ -61,8 +70,7 @@ def test(model, test_loader, evaluator, exp_root, cfg, view, epoch, max_batches=
                     idx,
                     pred=outputs[0].cpu().numpy(),
                     cls_pred=extra_outputs[0].cpu().numpy() if extra_outputs is not None else None)
-                cv2.imshow('pred', preds)
-                cv2.waitKey(0)
+                out.write(preds) # write to out object for video output per iteration
 
     if verbose:
         logging.info("Testing time: {:.4f}".format(time() - test_t0))
